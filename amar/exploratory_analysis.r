@@ -65,6 +65,18 @@ combined_shot_type_with_distance_plot <- function() {
 
 train$x_bins <- cut(train$loc_x, breaks = 25)
 
+
+courtplot <- function(feat) {
+        feat <- substitute(feat)
+        train %>% 
+                ggplot(aes(x = lon, y = lat)) +
+                geom_point(aes_q(color = feat), alpha = 0.7, size = 3) +
+                ylim(c(33.7, 34.0883)) +
+                scale_color_brewer(palette = "Set1") +
+                theme_void() +
+                ggtitle(paste(feat))
+}
+
 pplot <- function(feat) {
         feat <- substitute(feat)
         ggplot(data = train, aes_q(x = feat)) +
@@ -80,3 +92,32 @@ pplot(x_bins) + geom_bar() + ggtitle("Shot Distribution by x_bins") +
 
 
 pplot(x_bins) + theme(axis.text.x = element_blank())
+
+
+
+
+## understand the spacial features :
+
+courtplot(shot_zone_area)
+courtplot(shot_zone_basic)
+courtplot(shot_zone_range)
+
+## understand the time features :
+
+pplot(minutes_remaining) 
+pplot(period)
+pplot(seconds_remaining)
+pplot(seconds_remaining) + geom_bar() + ggtitle("Histogram of Shots by second_remaining")
+
+## understand the distance and season features :
+pplot(season) + coord_flip()
+pplot(shot_distance) + xlim(0, 60)  + scale_fill_brewer(palette = "Set1", direction = -2)
+
+## understand shot types features :
+pplot(combined_shot_type)
+pplot(shot_type)
+pplot(shot_zone_area) + coord_flip()
+pplot(shot_zone_basic) + coord_flip()
+
+## what about the opponent
+pplot(opponent) + coord_flip()
